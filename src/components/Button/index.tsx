@@ -14,7 +14,7 @@ export function Button(props: ButtonProps) {
         icon,
         title,
         outline = false,
-        bg = theme.colors.gray_2,
+        bg = theme.colors.gray_1,
         color = theme.colors.gray_7,
         style,
         ...rest

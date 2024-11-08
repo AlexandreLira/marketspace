@@ -1,10 +1,15 @@
 import { Button } from "@/src/components/Button";
 import { Input } from "@/src/components/Input";
+import { RootStackParamList } from "@/src/routes/login.routes";
 import { theme } from "@/src/theme";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export function Login() {
+interface LoginProps extends NativeStackScreenProps<RootStackParamList, 'login'> { }
+
+
+export function Login({ navigation }: LoginProps) {
     return (
         <SafeAreaView style={styles.container} edges={{ bottom: "maximum" }} >
             <View style={styles.content}>
@@ -48,6 +53,7 @@ export function Login() {
 
                 <Button
                     title="Criar uma conta"
+                    onPress={() => navigation.navigate('signUp')}
                     style={{ width: '100%' }}
                     bg={theme.colors.gray_5}
                     color={theme.colors.gray_2}
