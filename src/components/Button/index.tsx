@@ -50,7 +50,7 @@ const styling = (values: Styling) => StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        gap: 20,
+        gap: 8,
         borderWidth: values.outline ? 1 : 0,
         borderColor: theme.colors.gray_1
     },
@@ -61,6 +61,6 @@ const styling = (values: Styling) => StyleSheet.create({
     icon: {
         width: 18,
         aspectRatio: 1,
-        tintColor: values.color ? theme.colors.gray_1 : theme.colors.white
+        tintColor: values.color || theme.colors.white
     }
 })
