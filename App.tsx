@@ -7,13 +7,14 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Routes } from '../routes';
 import { View } from 'react-native';
+import { Routes } from './src/routes';
+import { StatusBar } from 'expo-status-bar';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default function App() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     Karla_300Light,
@@ -33,6 +34,7 @@ export default function RootLayout() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar style='inverted'/>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Routes />
       </ThemeProvider>

@@ -1,4 +1,5 @@
 import { Button } from "@/src/components/Button";
+import { Icon } from "@/src/components/Icon";
 import { ProductCard } from "@/src/components/ProductCard";
 import { theme } from "@/src/theme";
 import {
@@ -88,13 +89,11 @@ export function Home() {
                             alignItems: 'center',
                             gap: 16
                         }}>
-                            <Image
-                                source={theme.images.tag_regular}
-                                style={{
-                                    width: 22,
-                                    aspectRatio: 1,
-                                    tintColor: theme.colors.blue
-                                }} />
+                            <Icon
+                                name="tag_regular"
+                                size={22}
+                                color={theme.colors.blue}
+                            />
 
                             <View>
                                 <Text style={{
@@ -123,15 +122,13 @@ export function Home() {
                                 fontSize: 12,
                                 color: theme.colors.blue
                             }}>Meus anúncios</Text>
-                            <Image
-                                source={theme.images.arrow_right_regular}
-                                style={{
-                                    width: 16,
-                                    aspectRatio: 1,
-                                    resizeMode: 'contain',
-                                    tintColor: theme.colors.blue
-                                }}
+
+                            <Icon
+                                name="arrow_right_regular"
+                                size={16}
+                                color={theme.colors.blue}
                             />
+
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -165,14 +162,18 @@ export function Home() {
                         />
 
                         <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-                            <Image
-                                source={theme.images.magnifying_glass_regular}
-                                style={styles.searchIcon}
+                            <Icon
+                                name="magnifying_glass_regular"
+                                size={20}
+                                color={theme.colors.gray_2}
                             />
+
+
                             <View style={styles.searchLine} />
-                            <Image
-                                source={theme.images.sliders_regular}
-                                style={styles.searchIcon}
+                            <Icon
+                                name="sliders_regular"
+                                size={20}
+                                color={theme.colors.gray_2}
                             />
                         </View>
                     </View>

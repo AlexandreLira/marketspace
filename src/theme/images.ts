@@ -11,6 +11,7 @@ export const images = {
     eye_regular: require('@/src/assets/images/eye-regular.png'),
     eye_slash: require('@/src/assets/images/eye-slash.png'),
     favicon: require('@/src/assets/images/favicon.png'),
+    house_regular: require('@/src/assets/images/house-regular.png'),
     house_bold: require('@/src/assets/images/house-bold.png'),
     icon: require('@/src/assets/images/icon.png'),
     magnifying_glass_regular: require('@/src/assets/images/magnifying-glass-regular.png'),
@@ -29,3 +30,5 @@ export const images = {
     x_circle_fill: require('@/src/assets/images/x-circle-fill.png'),
     x_regular: require('@/src/assets/images/x-regular.png'),
 }
+
+export type ImagesTypes = keyof typeof images
