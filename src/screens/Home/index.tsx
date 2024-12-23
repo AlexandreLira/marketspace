@@ -179,7 +179,10 @@ export function Home({ navigation }) {
                         numColumns={2}
                         data={list}
                         renderItem={({ item }) =>
-                            <ProductCard data={item} />
+                            <ProductCard
+                                data={item}
+                                onPress={() => navigation.navigate('details_ad')}
+                            />
                         }
                     />
                 </View>

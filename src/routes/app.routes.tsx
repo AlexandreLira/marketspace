@@ -4,9 +4,11 @@ import { Home } from "../screens/Home";
 import { MyAds } from "../screens/MyAds";
 import { Icon } from "../components/Icon";
 import { theme } from "../theme";
+import { DetailsAd } from "../screens/DetailsAd";
 
 export type RootStackParamList = {
     home: undefined;
+    details_ad: undefined;
 };
 
 const TabBottom = createBottomTabNavigator();
@@ -67,6 +69,7 @@ export function AppRoutes() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="home" component={TabBottomRoutes} />
+            <Stack.Screen name="details_ad" component={DetailsAd} />
         </Stack.Navigator>
     )
 }

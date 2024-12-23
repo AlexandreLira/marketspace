@@ -1,5 +1,6 @@
 import { theme } from "@/src/theme";
 import { Image, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+import { Icon } from "../Icon";
 
 interface ButtonProps extends TouchableOpacityProps {
     icon?: keyof typeof theme.images;
@@ -28,10 +29,7 @@ export function Button(props: ButtonProps) {
     return (
         <TouchableOpacity style={[styles.container, style]} {...rest}>
             {icon &&
-                <Image
-                    source={theme.images[icon]}
-                    style={styles.icon}
-                />
+                <Icon name={icon} color={color} size={18} />
             }
             <Text style={styles.text}>{title}</Text>
         </TouchableOpacity>

@@ -1,5 +1,5 @@
 import { theme } from "@/src/theme";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 import { ProfileImage } from "../ProfileImage";
 
 
@@ -12,16 +12,19 @@ type CardProps = {
     disabled?: boolean
 }
 
-interface ProductCardProps {
+interface ProductCardProps extends TouchableOpacityProps {
     data: CardProps;
     profileShown?: boolean
 }
 
 export function ProductCard(props: ProductCardProps) {
-    const { data, profileShown = true } = props;
+    const { data, profileShown = true, ...rest } = props;
     const styles = styling(data)
     return (
-        <View style={styles.container}>
+        <TouchableOpacity
+            style={styles.container}
+            {...rest}
+        >
             <View style={styles.imageWrapper}>
                 {data.disabled &&
                     <>
@@ -59,7 +62,7 @@ export function ProductCard(props: ProductCardProps) {
                 <Text style={styles.price}>{data.price}</Text>
             </View>
 
-        </View>
+        </TouchableOpacity>
     )
 }
 
