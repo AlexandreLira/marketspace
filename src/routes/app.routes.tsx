@@ -1,6 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home } from "../screens/Home";
+import { MyAds } from "../screens/MyAds";
 import { Icon } from "../components/Icon";
 import { theme } from "../theme";
 
@@ -34,7 +35,7 @@ export function TabBottomRoutes() {
             />
             <TabBottom.Screen
                 name="my_ads"
-                component={Home}
+                component={MyAds}
                 options={{
                     tabBarIcon: (({ size, color, focused }) => (
                         <Icon

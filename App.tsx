@@ -34,7 +34,7 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar style='inverted'/>
+      <StatusBar style='dark'/>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Routes />
       </ThemeProvider>

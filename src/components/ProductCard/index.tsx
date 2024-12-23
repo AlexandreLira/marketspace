@@ -8,23 +8,34 @@ type CardProps = {
     title: string;
     product_image: string;
     isNew: boolean;
+    disabled?: boolean
 }
 
 interface ProductCardProps {
-    data: CardProps
+    data: CardProps;
+    profileShown?: boolean
 }
 
 export function ProductCard(props: ProductCardProps) {
-    const { data } = props;
+    const { data, profileShown = true } = props;
     const styles = styling(data)
     return (
         <View style={styles.container}>
             <View style={styles.imageWrapper}>
+                {data.disabled &&
+                    <>
+                        <View style={styles.disabledBackground} />
+                        <Text style={styles.disabledText}>Anúncio desativado</Text>
+                    </>
+                }
+                {
+                    profileShown &&
+                    <Image
+                        source={{ uri: data.profile_image }}
+                        style={styles.profileImage}
+                    />
 
-                <Image
-                    source={{ uri: data.profile_image }}
-                    style={styles.profileImage}
-                />
+                }
 
                 <View style={styles.tagContent}>
                     <Text style={styles.tagText}>{data.isNew ? 'Novo' : 'Usado'}</Text>
@@ -51,9 +62,11 @@ export function ProductCard(props: ProductCardProps) {
 const styling = (data: CardProps) => StyleSheet.create({
     container: {
         flex: 1,
+
     },
     imageWrapper: {
         marginBottom: 4,
+
     },
     profileImage: {
         width: 24,
@@ -68,7 +81,7 @@ const styling = (data: CardProps) => StyleSheet.create({
     },
     image: {
         width: "100%",
-        height: 100,
+        aspectRatio: 1 / 0.8,
         borderRadius: 6,
         resizeMode: 'cover',
     },
@@ -92,7 +105,7 @@ const styling = (data: CardProps) => StyleSheet.create({
     title: {
         fontFamily: theme.fonts.regular,
         fontSize: 14,
-        color: theme.colors.gray_2,
+        color: data.disabled ? theme.colors.gray_4 : theme.colors.gray_2
 
     },
     priceContent: {
@@ -101,14 +114,35 @@ const styling = (data: CardProps) => StyleSheet.create({
         gap: 4
     },
     dollarSign: {
-        fontFamily: theme.fonts.bold,
+        fontFamily: data.disabled ? theme.fonts.regular : theme.fonts.bold,
         fontSize: 12,
-        color: theme.colors.gray_1
+        color: data.disabled ? theme.colors.gray_4 : theme.colors.gray_1
     },
 
     price: {
-        fontFamily: theme.fonts.bold,
+        fontFamily: data.disabled ? theme.fonts.regular : theme.fonts.bold,
         fontSize: 16,
-        color: theme.colors.gray_1
+        color: data.disabled ? theme.colors.gray_4 : theme.colors.gray_1
+    },
+    disabledText: {
+        width: '100%',
+        flexShrink: 1,
+        fontFamily: theme.fonts.bold,
+        fontSize: 11,
+        textTransform: 'uppercase',
+        color: theme.colors.gray_7,
+        position: 'absolute',
+        zIndex: 3,
+        bottom: 8,
+        left: 8,
+    },
+    disabledBackground: {
+        backgroundColor: theme.colors.gray_1,
+        opacity: 0.45,
+        width: '100%',
+        height: "100%",
+        position: 'absolute',
+        zIndex: 2,
+        borderRadius: 6,
     }
 })

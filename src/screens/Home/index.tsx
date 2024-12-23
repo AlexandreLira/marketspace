@@ -47,7 +47,7 @@ const list = [
     },
 ]
 
-export function Home() {
+export function Home({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safearea} >
@@ -74,15 +74,11 @@ export function Home() {
 
 
                 <View style={styles.sellContent}>
-                    <Text style={{
-                        fontFamily: theme.fonts.regular,
-                        fontSize: 16,
-                        color: theme.colors.gray_3
-                    }}>
+                    <Text style={styles.text}>
                         Seus produtos anunciados para venda
                     </Text>
 
-                    <View style={styles.sellCard}>
+                    <TouchableOpacity style={styles.sellCard} onPress={() => navigation.navigate('my_ads')}>
 
                         <View style={{
                             flexDirection: 'row',
@@ -112,7 +108,7 @@ export function Home() {
                                 </Text>
                             </View>
                         </View>
-                        <TouchableOpacity style={{
+                        <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             gap: 8
@@ -129,16 +125,12 @@ export function Home() {
                                 color={theme.colors.blue}
                             />
 
-                        </TouchableOpacity>
-                    </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.searchContent}>
-                    <Text style={{
-                        fontFamily: theme.fonts.regular,
-                        fontSize: 16,
-                        color: theme.colors.gray_3
-                    }}>
+                    <Text style={styles.text}>
                         Compre produtos variados
                     </Text>
 
@@ -225,6 +217,11 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 999,
         borderColor: theme.colors.blue_light
+    },
+    text: {
+        fontFamily: theme.fonts.regular,
+        fontSize: 16,
+        color: theme.colors.gray_3
     },
     profileText: {
         fontFamily: theme.fonts.regular,
