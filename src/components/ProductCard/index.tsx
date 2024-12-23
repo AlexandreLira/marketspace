@@ -1,5 +1,6 @@
 import { theme } from "@/src/theme";
 import { Image, StyleSheet, Text, View } from "react-native";
+import { ProfileImage } from "../ProfileImage";
 
 
 type CardProps = {
@@ -30,9 +31,12 @@ export function ProductCard(props: ProductCardProps) {
                 }
                 {
                     profileShown &&
-                    <Image
-                        source={{ uri: data.profile_image }}
+                    <ProfileImage
                         style={styles.profileImage}
+                        source={{ uri: data.profile_image }}
+                        size={24}
+                        borderWidth={1}
+                        borderColor={theme.colors.gray_7}
                     />
 
                 }
@@ -69,15 +73,10 @@ const styling = (data: CardProps) => StyleSheet.create({
 
     },
     profileImage: {
-        width: 24,
         position: 'absolute',
         left: 4,
         top: 4,
         zIndex: 1,
-        aspectRatio: 1,
-        borderWidth: 1,
-        borderRadius: 999,
-        borderColor: theme.colors.gray_7
     },
     image: {
         width: "100%",

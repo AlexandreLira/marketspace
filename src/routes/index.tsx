@@ -5,7 +5,7 @@ import { AppRoutes } from "./app.routes";
 export function Routes() {
     const auth = true
     return (
-        <NavigationContainer independent>
+        <NavigationContainer>
             {auth ? <AppRoutes /> : <LoginRoutes />}
         </NavigationContainer>
     )

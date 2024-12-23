@@ -1,6 +1,7 @@
 import { Button } from "@/src/components/Button";
 import { Icon } from "@/src/components/Icon";
 import { ProductCard } from "@/src/components/ProductCard";
+import { ProfileImage } from "@/src/components/ProfileImage";
 import { theme } from "@/src/theme";
 import {
     FlatList,
@@ -54,10 +55,7 @@ export function Home({ navigation }) {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.headerProfile}>
-                        <Image
-                            source={{ uri: PROFILE_URL }}
-                            style={styles.profileImage}
-                        />
+                        <ProfileImage source={{ uri: PROFILE_URL }} />
 
                         <View style={{ justifyContent: 'space-evenly' }}>
                             <Text style={styles.profileText}>Boas vindas,</Text>
