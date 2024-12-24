@@ -6,24 +6,66 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
 
 import { Icon } from "@/src/components/Icon";
 import { theme } from "@/src/theme";
 import { Input } from "@/src/components/Input";
 import { Selection } from "@/src/components/Selection";
 import { Button } from "@/src/components/Button";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/src/routes/app.routes";
 
-import { SafeAreaView } from "react-native-safe-area-context";
+const schema = yup.object().shape({
+    name: yup.string(),
+    description: yup.string(),
+    is_new: yup.boolean(),
+    price: yup.string(),
+    accept_trade: yup.boolean(),
+    payment_methods: yup.array().of(yup.string()).required()
+})
 
-export function CreateOrEditProduct() {
+
+const payment_methods = [
+    { key: 'pix', label: 'Pix' },
+    { key: 'card', label: 'Cartão de Crédito' },
+    { key: 'boleto', label: 'Boleto' },
+    { key: 'cash', label: 'Dinheiro' },
+    { key: 'deposit', label: 'Depósito Bancário' },
+]
+
+interface CreateOrEditProductProps extends NativeStackScreenProps<RootStackParamList, 'create_or_edit_product'> { }
+
+
+export function CreateOrEditProduct({ navigation }: CreateOrEditProductProps) {
+    const { register, getValues, handleSubmit, control } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            name: '',
+            description: '',
+            payment_methods: [],
+            accept_trade: false,
+            price: '0',
+            is_new: true,
+        }
+    });
+
+
+    function handleForm(value: any) {
+        console.log(value)
+    }
+
     return (
         <SafeAreaView
-            style={{ flex: 1 }}
+            style={{ flex: 1, backgroundColor: theme.colors.gray_6 }}
             edges={{ bottom: 'off', top: 'maximum' }}
         >
 
             <View style={styles.header}>
-                <TouchableOpacity style={styles.headerBack}>
+                <TouchableOpacity style={styles.headerBack} onPress={() => navigation.goBack()}>
                     <Icon
                         name="arrow_left_regular"
                         size={24}
@@ -55,17 +97,59 @@ export function CreateOrEditProduct() {
                 {/* Sobre o Produto */}
                 <View style={styles.section}>
 
-                    <Text
-                        style={styles.sectionTitle}
-                    >
+                    <Text style={styles.sectionTitle} >
                         Sobre o produto
                     </Text>
-                    <Input title="Título do anúncio" />
-                    <Input title="Descrição do produto" multiline />
+
+                    <Controller
+                        control={control}
+                        name="name"
+                        render={({ field: { onChange, value } }) =>
+                            <Input
+                                title="Título do anúncio"
+                                value={value}
+                                onChangeText={onChange}
+                            />
+                        }
+                    />
+
+                    <Controller
+                        control={control}
+                        name="description"
+                        render={({ field: { onChange, value } }) =>
+                            <Input
+                                title="Descrição do produto"
+                                value={value}
+                                onChangeText={onChange}
+                                multiline
+                            />
+                        }
+                    />
+
+
 
                     <View style={styles.selectionWrapper}>
-                        <Selection checked text="Produto novo" type="radio" />
-                        <Selection text="Produto usado" type="radio" />
+                        <Controller
+                            control={control}
+                            name="is_new"
+                            render={({ field: { onChange, value } }) =>
+                                <>
+                                    <Selection
+                                        checked={value}
+                                        onPress={() => onChange(true)}
+                                        text="Produto novo"
+                                        type="radio"
+                                    />
+                                    <Selection
+                                        checked={!value}
+                                        onPress={() => onChange(false)}
+                                        text="Produto usado"
+                                        type="radio"
+                                    />
+                                </>
+                            }
+                        />
+
                     </View>
 
                 </View>
@@ -76,37 +160,79 @@ export function CreateOrEditProduct() {
                     <Text style={styles.sectionTitle}>
                         Venda
                     </Text>
-                    <Input title="45.00" keyboardType="decimal-pad" prefix />
+
+                    <Controller
+                        control={control}
+                        name="price"
+                        render={({ field: { onChange, value } }) =>
+
+                            <Input
+                                title="45.00"
+                                keyboardType="decimal-pad"
+                                prefix
+                                value={value}
+                                onChangeText={onChange}
+                            />
+
+                        }
+                    />
 
                     <View style={{ gap: 12 }}>
                         <Text style={styles.sectionSubtitle}>
                             Aceita troca?
                         </Text>
-
-                        <Switch
-                            trackColor={{
-                                false: theme.colors.gray_5,
-                                true: theme.colors.blue_light
-                            }}
+                        <Controller
+                            control={control}
+                            name="accept_trade"
+                            render={({ field: { onChange, value } }) =>
+                                <Switch
+                                    style={{ alignSelf: 'flex-start' }}
+                                    value={value}
+                                    onValueChange={onChange}
+                                    trackColor={{
+                                        false: theme.colors.gray_5,
+                                        true: theme.colors.blue_light
+                                    }}
+                                />
+                            }
                         />
+
                     </View>
 
                     <View style={{ gap: 12 }}>
                         <Text style={styles.sectionSubtitle}>
                             Meios de pagamento aceitos
                         </Text>
+                        <Controller
+                            control={control}
+                            name="payment_methods"
+                            render={({ field: { onChange, value } }) =>
+                                <View style={{ gap: 8 }}>
+                                    {payment_methods.map(item =>
+                                        <Selection
+                                            text={item.label}
+                                            checked={value?.includes(item.key)}
+                                            type="checkbox" key={item.key}
+                                            onPress={() => {
+                                                if (value?.includes(item.key)) {
+                                                    const newMethos = value.filter(method => method != item.key)
+                                                    onChange(newMethos)
+                                                } else {
 
-                        <View style={{ gap: 8 }}>
-                            <Selection text="Boleto" type="checkbox" />
-                            <Selection text="Pix" type="checkbox" />
-                            <Selection text="Dinheiro" type="checkbox" />
-                            <Selection text="Cartão de Crédito" type="checkbox" />
-                            <Selection text="Depósito Bancário" type="checkbox" />
-                        </View>
+                                                    onChange([...value, item.key])
+                                                }
+                                            }}
+                                        />
+                                    )}
+
+                                </View>
+                            }
+                        />
+
                     </View>
                 </View>
             </ScrollView>
-            
+
             {/* Footer */}
             <View style={styles.sectionFooter}>
                 <Button
@@ -115,14 +241,17 @@ export function CreateOrEditProduct() {
                     bg={theme.colors.gray_5}
                     color={theme.colors.gray_2}
                 />
-                <Button title="Avançar" style={{ flex: 1 }} />
+                <Button
+                    onPress={handleSubmit(handleForm)}
+                    title="Avançar"
+                    style={{ flex: 1 }}
+                />
             </View>
         </SafeAreaView >
     )
 }
 
 const styles = StyleSheet.create({
-
     header: {
         flexDirection: 'row',
         alignItems: 'center',

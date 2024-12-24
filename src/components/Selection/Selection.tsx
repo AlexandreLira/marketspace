@@ -1,20 +1,21 @@
 import { theme } from "@/src/theme";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 import { Icon } from "../Icon";
 
 
-interface SelectionProps {
+interface SelectionProps extends TouchableOpacityProps {
     checked?: boolean;
     text: string;
     type: 'radio' | 'checkbox'
 }
 
 export function Selection(props: SelectionProps) {
-    const { text, type, checked } = props;
+    const { text, type, checked, ...rest } = props;
 
-    const styles = styling(checked)
+    const styles = styling(checked);
+
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} {...rest}>
 
             {type == 'radio' &&
                 <View style={styles.radio}>
@@ -37,7 +38,7 @@ export function Selection(props: SelectionProps) {
             >
                 {text}
             </Text>
-        </View>
+        </TouchableOpacity>
     )
 }
 

@@ -1,9 +1,11 @@
-import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
+import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Container } from "@/src/components/Container";
 import { Icon } from "@/src/components/Icon";
 import { ProductCard } from "@/src/components/ProductCard";
 import { theme } from "@/src/theme";
 import { useState } from "react";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/src/routes/app.routes";
 
 const list = [
     {
@@ -40,7 +42,10 @@ const list = [
     },
 ]
 
-export function MyAds() {
+interface MyAdsProps extends NativeStackScreenProps<RootStackParamList, 'home'> { }
+
+
+export function MyAds({ navigation }: MyAdsProps) {
 
     const [items, setItems] = useState(list)
 
@@ -48,12 +53,17 @@ export function MyAds() {
         <Container>
             <View style={{ justifyContent: 'center', alignItems: "center" }}>
                 <Text style={styles.headerTitle} >Meus anúncios</Text>
-                <Icon
-                    size={24}
-                    name="plus_regular"
-                    color={theme.colors.gray_1}
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('create_or_edit_product')}
                     style={{ position: 'absolute', right: 0 }}
-                />
+                >
+                    <Icon
+                        size={24}
+                        name="plus_regular"
+                        color={theme.colors.gray_1}
+
+                    />
+                </TouchableOpacity>
             </View>
 
             <View>
