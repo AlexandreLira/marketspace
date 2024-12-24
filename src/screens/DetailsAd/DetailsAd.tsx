@@ -57,10 +57,13 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                             color={theme.colors.gray_1}
                         />
                     </TouchableOpacity>
-                    <Icon
-                        name="pencil_simple_line_regular"
-                        color={theme.colors.gray_1}
-                    />
+
+                    <TouchableOpacity onPress={() => navigation.navigate('create_or_edit_product')}>
+                        <Icon
+                            name="pencil_simple_line_regular"
+                            color={theme.colors.gray_1}
+                        />
+                    </TouchableOpacity>
                 </View>
 
                 <View>
@@ -92,10 +95,6 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                         </>
                     }
 
-
-
-
-
                     <FlatList
                         data={[item, item, item]}
                         horizontal
@@ -110,12 +109,6 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                     />
 
                 </View>
-
-
-
-
-
-
 
                 <View style={styles.content}>
                     <View style={styles.profile}>

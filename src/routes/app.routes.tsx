@@ -5,10 +5,12 @@ import { MyAds } from "../screens/MyAds";
 import { Icon } from "../components/Icon";
 import { theme } from "../theme";
 import { DetailsAd } from "../screens/DetailsAd";
+import { CreateOrEditProduct } from "../screens/CreateOrEditProduct";
 
 export type RootStackParamList = {
     home: undefined;
     details_ad: undefined;
+    create_or_edit_product: undefined;
 };
 
 const TabBottom = createBottomTabNavigator();
@@ -70,6 +72,7 @@ export function AppRoutes() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="home" component={TabBottomRoutes} />
             <Stack.Screen name="details_ad" component={DetailsAd} />
+            <Stack.Screen name="create_or_edit_product" component={CreateOrEditProduct} />
         </Stack.Navigator>
     )
 }

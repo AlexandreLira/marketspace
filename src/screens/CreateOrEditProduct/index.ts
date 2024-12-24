@@ -1,0 +1,1 @@
+export { CreateOrEditProduct } from './CreateOrEditProduct'

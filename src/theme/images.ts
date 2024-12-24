@@ -29,6 +29,7 @@ export const images = {
     whatsapp_logo_fill: require('@/src/assets/images/whatsapp-logo-fill.png'),
     x_circle_fill: require('@/src/assets/images/x-circle-fill.png'),
     x_regular: require('@/src/assets/images/x-regular.png'),
+    check: require('@/src/assets/images/check.png'),
 }
 
 export type ImagesTypes = keyof typeof images

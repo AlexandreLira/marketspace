@@ -6,6 +6,7 @@ import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTimin
 interface InputProps extends TextInputProps {
     title: string;
     error?: string;
+    prefix?: boolean;
 }
 
 export function Input(props: InputProps) {
@@ -15,6 +16,7 @@ export function Input(props: InputProps) {
         style,
         error,
         secureTextEntry,
+        prefix,
         ...rest
     } = props
     const animation = useSharedValue(0)
@@ -22,7 +24,7 @@ export function Input(props: InputProps) {
     const [hidePassword, setHidePassword] = useState(secureTextEntry)
 
     const styleAnimdated = useAnimatedStyle(() => ({
-        borderColor: interpolateColor(animation.value, [0, 100], [theme.colors.gray_7, theme.colors.gray_1]),
+        borderColor: interpolateColor(animation.value, [0, 100], [theme.colors.gray_7, theme.colors.blue_light]),
         height: multiline ? 120 : 48,
         borderWidth: 1
     }))
@@ -40,6 +42,14 @@ export function Input(props: InputProps) {
         <View style={[styles.container, style]}>
             <Animated.View style={[styles.content, styleAnimdated]}>
                 <View style={styles.inputWrapper}>
+                    {prefix &&
+                        <Text style={{
+                            fontSize: 16,
+                            paddingLeft: 16,
+                            fontFamily: theme.fonts.regular,
+                            color: theme.colors.gray_1
+                        }}>R$</Text>
+                    }
                     <TextInput
                         {...rest}
                         multiline={multiline}
