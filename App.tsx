@@ -10,6 +10,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { View } from 'react-native';
 import { Routes } from './src/routes';
 import { StatusBar } from 'expo-status-bar';
+import { AuthContextProvider } from './src/contexts/AuthContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,10 +35,12 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar style='dark'/>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Routes />
-      </ThemeProvider>
+      <StatusBar style='dark' />
+      <AuthContextProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Routes />
+        </ThemeProvider>
+      </AuthContextProvider>
     </View>
   );
 }

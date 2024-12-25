@@ -16,7 +16,7 @@ export function LoginRoutes() {
                 headerShown: false,
                 animation: 'fade_from_bottom'
             }}
-            initialRouteName="signUp"
+            initialRouteName="login"
         >
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="signUp" component={SignUp} />

@@ -1,12 +1,18 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { LoginRoutes } from "./login.routes";
 import { AppRoutes } from "./app.routes";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 export function Routes() {
-    const auth = true
+
+    const { user } = useAuth()
+
+   
     return (
         <NavigationContainer>
-            {auth ? <AppRoutes /> : <LoginRoutes />}
+            {user ? <AppRoutes /> : <LoginRoutes />}
         </NavigationContainer>
     )
 }

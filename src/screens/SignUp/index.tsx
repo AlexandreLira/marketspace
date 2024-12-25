@@ -2,21 +2,73 @@ import { Button } from "@/src/components/Button";
 import { Input } from "@/src/components/Input";
 import { Profile } from "@/src/components/Profile";
 import { RootStackParamList } from "@/src/routes/login.routes";
+import { api } from "@/src/services/api";
 import { theme } from "@/src/theme";
+import { AppError } from "@/src/utils/AppError";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as yup from 'yup';
+
 
 interface SignUpProps extends NativeStackScreenProps<RootStackParamList, 'signUp'> { }
 
 
+type FormDataProps = {
+    name: string;
+    email: string;
+    password: string;
+    password_confirm: string;
+}
+
+const schema = yup.object({
+    name: yup
+        .string()
+        .required('O campo nome é obrigatório'),
+    email: yup
+        .string()
+        .email()
+        .required('O campo e-mail é obrigatório'),
+    password: yup
+        .string()
+        .required('O campo e-mail é obrigatório')
+        .min(6, 'A senha deve ter pelo menos 6 caracteres'),
+    password_confirm: yup
+        .string()
+        .required('Confirme a senha.')
+        .oneOf([yup.ref('password')], 'Senhas não são iguais.')
+
+}).required()
+
 export function SignUp({ navigation }: SignUpProps) {
+
+    const { handleSubmit, control } = useForm({
+        resolver: yupResolver(schema)
+    });
+
+    async function handleSignUp(data: FormDataProps) {
+        try {
+            const { email, name, password } = data
+            await api.post('/users', { email, name, password, avatar: '' })
+
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde'
+
+            Alert.alert(title)
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Image source={theme.images.icon} style={styles.logo} />
                 <Text style={styles.headerTitle}>Boas vindas</Text>
-                <Text style={styles.headerSubtitle}>Crie sua conta e use o espaço para comprar itens variados e vender seus produtos</Text>
+                <Text style={styles.headerSubtitle}>
+                    Crie sua conta e use o espaço para comprar itens variados e vender seus produtos
+                </Text>
             </View>
 
             <View style={styles.content}>
@@ -24,19 +76,70 @@ export function SignUp({ navigation }: SignUpProps) {
 
                     <Profile />
 
+                    <Controller
+                        control={control}
+                        name="name"
+                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                            <Input
+                                title="Nome"
+                                placeholder="Nome"
+                                onChangeText={onChange}
+                                value={value}
+                                error={error?.message}
+                            />
+                        )}
+                    />
 
-                    <Input title="Nome" />
-                    <Input title="Email" />
+                    <Controller
+                        control={control}
+                        name="email"
+                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                            <Input
+                                title="Email"
+                                autoCapitalize="none"
+                                onChangeText={onChange}
+                                value={value}
+                                error={error?.message}
+                            />
+                        )}
+                    />
+
                     <Input title="Telefone" />
-                    <Input
-                        title="Senha"
-                        secureTextEntry
+
+
+                    <Controller
+                        control={control}
+                        name="password"
+                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                            <Input
+                                title="Senha"
+                                secureTextEntry
+                                onChangeText={onChange}
+                                value={value}
+                                error={error?.message}
+                            />
+                        )}
                     />
-                    <Input
-                        title="Confirmar senha"
-                        secureTextEntry
+
+                    <Controller
+                        control={control}
+                        name="password_confirm"
+                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                            <Input
+                                title="Confirmar senha"
+                                secureTextEntry
+                                onChangeText={onChange}
+                                value={value}
+                                error={error?.message}
+                            />
+                        )}
                     />
-                    <Button title="Criar" style={{ marginTop: 8 }} />
+
+                    <Button
+                        title="Criar"
+                        style={{ marginTop: 8 }}
+                        onPress={handleSubmit(handleSignUp)}
+                    />
                 </View>
 
             </View>

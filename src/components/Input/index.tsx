@@ -79,10 +79,11 @@ export function Input(props: InputProps) {
                         </TouchableOpacity>
                     }
                 </View>
-                {error &&
-                    <Text>{error}</Text>
-                }
+
             </Animated.View>
+            {error &&
+                <Text style={{padding: 4}}>{error}</Text>
+            }
         </View>
     )
 }
