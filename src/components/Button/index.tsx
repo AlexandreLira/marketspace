@@ -1,5 +1,11 @@
 import { theme } from "@/src/theme";
-import { Image, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+import {
+    ActivityIndicator,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableOpacityProps
+} from "react-native";
 import { Icon } from "../Icon";
 
 interface ButtonProps extends TouchableOpacityProps {
@@ -8,7 +14,11 @@ interface ButtonProps extends TouchableOpacityProps {
     outline?: boolean;
     bg?: string;
     color?: string;
+    isLoading?: boolean
 }
+
+interface Styling extends Pick<ButtonProps, 'bg' | 'outline' | 'color' | 'isLoading'> { }
+
 
 export function Button(props: ButtonProps) {
     const {
@@ -17,6 +27,7 @@ export function Button(props: ButtonProps) {
         outline = false,
         bg = theme.colors.gray_1,
         color = theme.colors.gray_7,
+        isLoading,
         style,
         ...rest
     } = props;
@@ -24,21 +35,29 @@ export function Button(props: ButtonProps) {
     const styles = styling({
         outline,
         bg,
-        color
+        color,
+        isLoading
     })
     return (
-        <TouchableOpacity style={[styles.container, style]} {...rest}>
-            {icon &&
-                <Icon name={icon} color={color} size={18} />
+        <TouchableOpacity
+            style={[styles.container, style]}
+            disabled={isLoading}
+            {...rest}
+        >
+            {isLoading && <ActivityIndicator color={color} />
             }
-            <Text style={styles.text}>{title}</Text>
+            {icon && <Icon
+                name={icon}
+                color={color}
+                size={18}
+            />}
+
+            {!isLoading && <Text style={styles.text}>{title}</Text>}
+
         </TouchableOpacity>
     )
 }
 
-interface Styling extends Pick<ButtonProps, 'bg' | 'outline' | 'color'> {
-
-}
 
 const styling = (values: Styling) => StyleSheet.create({
     container: {
@@ -50,7 +69,8 @@ const styling = (values: Styling) => StyleSheet.create({
         flexDirection: 'row',
         gap: 8,
         borderWidth: values.outline ? 1 : 0,
-        borderColor: theme.colors.gray_1
+        borderColor: theme.colors.gray_1,
+        opacity: values.isLoading ? 0.6 : 1
     },
     text: {
         ...theme.texts.title_sx,

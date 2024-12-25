@@ -2,10 +2,10 @@ import { Button } from "@/src/components/Button";
 import { Icon } from "@/src/components/Icon";
 import { ProductCard } from "@/src/components/ProductCard";
 import { ProfileImage } from "@/src/components/ProfileImage";
+import { useAuth } from "@/src/hooks/useAuth";
 import { theme } from "@/src/theme";
 import {
     FlatList,
-    Image,
     SafeAreaView,
     StyleSheet,
     Text,
@@ -13,9 +13,6 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-
-const PROFILE_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvJaoIeJQU_V9rL_ZII61whWyqSFbmMgTgwQ&s'
-
 
 const list = [
     {
@@ -50,16 +47,18 @@ const list = [
 
 export function Home({ navigation }) {
 
+    const { user } = useAuth()
+
     return (
         <SafeAreaView style={styles.safearea} >
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.headerProfile}>
-                        <ProfileImage source={{ uri: PROFILE_URL }} />
+                        <ProfileImage source={{ uri: 'http://localhost:3333/images/' + user.avatar }} />
 
                         <View style={{ justifyContent: 'space-evenly' }}>
                             <Text style={styles.profileText}>Boas vindas,</Text>
-                            <Text style={styles.profileName}>Maria</Text>
+                            <Text style={styles.profileName}>{user.name}</Text>
                         </View>
                     </View>
 

@@ -1,10 +1,12 @@
 import { theme } from "@/src/theme";
 import { Image, StyleSheet, View } from "react-native";
 
+const DEFAULT_USER_PHOTO = 'https://www.summithealth.org.au/wp-content/uploads/2021/07/placeholder.jpg';
+
 export function Profile() {
     return (
         <View style={styles.container}>
-            <Image source={{ uri: 'https://www.summithealth.org.au/wp-content/uploads/2021/07/placeholder.jpg' }}
+            <Image source={{ uri: DEFAULT_USER_PHOTO }}
                 style={styles.avatar}
             />
 

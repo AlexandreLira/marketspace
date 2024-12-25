@@ -1,15 +1,41 @@
 import { Button } from "@/src/components/Button";
 import { Input } from "@/src/components/Input";
+import { useAuth } from "@/src/hooks/useAuth";
 import { RootStackParamList } from "@/src/routes/login.routes";
 import { theme } from "@/src/theme";
+import { AppError } from "@/src/utils/AppError";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface LoginProps extends NativeStackScreenProps<RootStackParamList, 'login'> { }
 
+type FormData = {
+    email: string;
+    password: string;
+}
 
 export function Login({ navigation }: LoginProps) {
+
+    const { control, handleSubmit } = useForm<FormData>();
+    const { signIn } = useAuth();
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    async function handleForm(data: FormData) {
+        try {
+            setIsLoading(true)
+            await signIn(data.email, data.password)
+        } catch (error) {
+            setIsLoading(false)
+            const isAppError = error instanceof AppError;
+            const title = isAppError ? error.message : 'Não foi possível fazer logim. Tente novamente mais tarde'
+            Alert.alert(title)
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container} edges={{ bottom: "maximum" }} >
             <View style={styles.content}>
@@ -31,20 +57,48 @@ export function Login({ navigation }: LoginProps) {
 
                     <Text style={styles.text}>Acesse sua conta</Text>
 
-                    <Input
-                        title="E-mail"
+                    <Controller
+                        name="email"
+                        control={control}
+                        rules={{ required: 'Informe o e-mail' }}
+                        render={({ field, fieldState }) =>
+                            <Input
+                                title="E-mail"
+                                onChangeText={field.onChange}
+                                keyboardType="email-address"
+                                textContentType="emailAddress"
+                                inputMode="email"
+                                value={field.value}
+                                error={fieldState.error?.message}
+                                autoCapitalize="none"
+                            />
+                        }
                     />
 
-                    <Input
-                        title="Senha"
-                        secureTextEntry
+                    <Controller
+                        name="password"
+                        control={control}
+                        rules={{ required: 'Informe a senha' }}
+                        render={({ field, fieldState }) =>
+                            <Input
+                                title="Senha"
+                                secureTextEntry
+                                onChangeText={field.onChange}
+                                textContentType="password"
+                                value={field.value}
+                                error={fieldState.error?.message}
+                            />
+                        }
                     />
 
                     <Button
                         title="Entrar"
                         style={{ width: '100%', marginTop: 16 }}
                         bg={theme.colors.blue_light}
+                        isLoading={isLoading}
+                        onPress={handleSubmit(handleForm)}
                     />
+
                 </View>
             </View>
 
@@ -57,6 +111,7 @@ export function Login({ navigation }: LoginProps) {
                     style={{ width: '100%' }}
                     bg={theme.colors.gray_5}
                     color={theme.colors.gray_2}
+
                 />
             </View>
 
