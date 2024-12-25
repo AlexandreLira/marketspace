@@ -6,6 +6,7 @@ import { Icon } from "../components/Icon";
 import { theme } from "../theme";
 import { DetailsAd } from "../screens/DetailsAd";
 import { CreateOrEditProduct } from "../screens/CreateOrEditProduct";
+import { useAuth } from "../hooks/useAuth";
 
 export type RootStackParamList = {
     home: undefined;
@@ -17,6 +18,7 @@ const TabBottom = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function TabBottomRoutes() {
+    const { logout } = useAuth()
     return (
         <TabBottom.Navigator screenOptions={{
             headerShown: false,
@@ -53,6 +55,7 @@ export function TabBottomRoutes() {
             <TabBottom.Screen
                 name="sign_out"
                 component={Home}
+                listeners={{ tabPress: logout }}
                 options={{
                     tabBarIcon: (({ size, color, focused }) => (
                         <Icon

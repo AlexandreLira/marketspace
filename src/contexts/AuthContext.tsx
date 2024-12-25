@@ -6,6 +6,7 @@ import { UserStorageService } from '../services/UserStorageService';
 export type AuthCOntextDataProps = {
     user: UserDTO;
     signIn: (email: string, password: string) => Promise<void>;
+    logout: () => {};
     isLoadUser: boolean
 }
 
@@ -33,6 +34,19 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
     }
 
+    async function logout() {
+        try {
+            setIsLoadUser(true)
+            setUser({} as UserDTO)
+            await UserStorageService.remove()
+
+        } catch {
+
+        } finally {
+            setIsLoadUser(false)
+        }
+    }
+
     async function loadUser() {
         try {
             setIsLoadUser(true)
@@ -53,7 +67,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, signIn, isLoadUser }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                logout,
+                signIn,
+                isLoadUser
+            }}>
             {children}
         </AuthContext.Provider>
     )
