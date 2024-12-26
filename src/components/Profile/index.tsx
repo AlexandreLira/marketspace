@@ -1,12 +1,29 @@
 import { theme } from "@/src/theme";
-import { Image, StyleSheet, View } from "react-native";
+import {
+    Image,
+    StyleSheet,
+    TouchableOpacityProps,
+    TouchableOpacity,
+    View,
+    ImageSourcePropType
+} from "react-native";
 
-const DEFAULT_USER_PHOTO = 'https://www.summithealth.org.au/wp-content/uploads/2021/07/placeholder.jpg';
 
-export function Profile() {
+interface ProfileProps extends TouchableOpacityProps {
+    source?: ImageSourcePropType
+}
+
+export function Profile(props: ProfileProps) {
+    const {
+        source,
+        ...rest
+    } = props;
     return (
-        <View style={styles.container}>
-            <Image source={{ uri: DEFAULT_USER_PHOTO }}
+        <TouchableOpacity
+            style={styles.container}
+            {...rest}
+        >
+            <Image source={source}
                 style={styles.avatar}
             />
 
@@ -16,7 +33,7 @@ export function Profile() {
                     style={styles.icon}
                 />
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

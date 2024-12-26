@@ -54,7 +54,7 @@ export function Home({ navigation }) {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.headerProfile}>
-                        <ProfileImage source={{ uri: 'http://localhost:3333/images/' + user.avatar }} />
+                        <ProfileImage source={{ uri: 'http://192.168.0.7:3333/images/' + user.avatar }} />
 
                         <View style={{ justifyContent: 'space-evenly' }}>
                             <Text style={styles.profileText}>Boas vindas,</Text>
