@@ -10,13 +10,20 @@ interface ISignUp {
     tel: string;
     photoFile: PhotoFile
 }
+
+interface ILoginReturn {
+    user: UserDTO;
+    token: string;
+    refresh_token: string;
+}
+
 export class UserService {
 
-    static async login(email: string, password: string): Promise<UserDTO> {
+    static async login(email: string, password: string): Promise<ILoginReturn> {
         try {
             const payload = { email, password }
             const response = await api.post('sessions', payload)
-            return response.data.user
+            return response.data
         } catch (error) {
             throw error
         }

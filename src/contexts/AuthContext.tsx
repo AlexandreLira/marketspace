@@ -2,6 +2,7 @@ import { ReactNode, createContext, useEffect, useState } from 'react';
 import { UserDTO } from '../dtos/UserDTO';
 import { UserService } from '../services/UserService';
 import { UserStorageService } from '../services/UserStorageService';
+import { AuthTokenService } from '../services/AuthTokenService';
 
 export type AuthCOntextDataProps = {
     user: UserDTO;
@@ -24,8 +25,16 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     async function signIn(email: string, password: string) {
         try {
             const response = await UserService.login(email, password);
-            UserStorageService.save(response)
-            setUser(response);
+            const { refresh_token, token, user } = response
+
+            if (refresh_token && token && user) {
+                await Promise.all([
+                    UserStorageService.save(user),
+                    AuthTokenService.save({ refresh_token, token })
+                ])
+
+                setUser(user);
+            }
 
         } catch (error) {
             console.log(error)
@@ -39,6 +48,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
             setIsLoadUser(true)
             setUser({} as UserDTO)
             await UserStorageService.remove()
+            await AuthTokenService.remove()
 
         } catch {
 
@@ -50,9 +60,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     async function loadUser() {
         try {
             setIsLoadUser(true)
-            const userLogged = await UserStorageService.get()
 
-            if (userLogged) {
+            const [userLogged, token] = await Promise.all([
+                UserStorageService.get(),
+                AuthTokenService.get()
+            ])
+
+            if (userLogged && token) {
                 setUser(userLogged)
             }
         } catch (error) {
