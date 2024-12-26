@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
+    Alert,
     Dimensions,
     FlatList,
     Image,
@@ -55,8 +56,34 @@ export function DetailsAd({ navigation, route }: DetailsAdProps) {
 
     async function handleActiveProduct() {
         try {
-            setProduct(state => ({...state, is_active: !state.is_active}))
+            setProduct(state => ({ ...state, is_active: !state.is_active }))
             await ProductService.active(product.id, !product.is_active)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    async function handleDeleteProduct() {
+        Alert.alert('Deletar', 'Confirma',
+            [
+                {
+                    text: 'Não',
+                  
+                },
+                {
+                    text: 'Sim',
+                    isPreferred: true,
+                    onPress: deleteProduct
+                },
+            ]
+        )
+    }
+    
+    async function deleteProduct() {
+        try {
+            setLoading(true)
+            await ProductService.delete(product.id)
+            setLoading(false)
+            navigation.goBack()
         } catch (error) {
             console.log(error)
         }
@@ -209,6 +236,7 @@ export function DetailsAd({ navigation, route }: DetailsAdProps) {
                             icon="trash_simple_regular"
                             bg={theme.colors.gray_5}
                             color={theme.colors.gray_2}
+                            onPress={handleDeleteProduct}
                         />
                     </View>
 

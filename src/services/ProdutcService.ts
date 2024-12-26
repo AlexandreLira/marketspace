@@ -82,4 +82,11 @@ export class ProductService {
             throw error
         }
     }
+    static async delete(id: string) {
+        try {
+            await api.delete(`/products/${id}`)
+        } catch (error) {
+            throw error
+        }
+    }
 }
