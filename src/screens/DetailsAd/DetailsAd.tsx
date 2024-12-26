@@ -18,14 +18,8 @@ import { ProfileImage } from "@/src/components/ProfileImage";
 import { RootStackParamList } from "@/src/routes/app.routes";
 import { theme } from "@/src/theme";
 import { IProductDetails, ProductService } from "@/src/services/ProdutcService";
+import { ImageUtils } from "@/src/utils/ImageUtils";
 
-const item = {
-    price: 900.90,
-    profile_image: 'https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/50dab922-5d48-4c6b-8725-7fd0755d9334/3a3f2d35-8167-4708-9ef0-bdaa980989f9.png',
-    title: 'Iphone 16',
-    product_image: 'https://jasondeegan.com/wp-content/uploads/2024/09/iPhone-16-Review-Discover-How-Its-Changing-the-Game.jpg',
-    isNew: false
-}
 
 const payment_icon = {
     pix: 'qr_code_regular',
@@ -122,7 +116,7 @@ export function DetailsAd({ navigation, route }: DetailsAdProps) {
                         horizontal
                         renderItem={({ item }) =>
                             <Image
-                                source={{ uri: 'http://192.168.0.7:3333/images/' + item.path }}
+                                source={{ uri: ImageUtils.url(item.path) }}
                                 style={styles.image}
                             />
                         }

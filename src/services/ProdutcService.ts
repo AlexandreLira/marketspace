@@ -1,5 +1,10 @@
 import { api } from "./api"
 
+export interface IProductImage {
+    id: string;
+    path: string;
+}
+
 export interface IProduct {
     id: string
     name: string,
@@ -18,10 +23,7 @@ export interface IProductDetails extends IProduct {
         key: string,
         name: string
     }[];
-    product_images: {
-        id: string;
-        path: string;
-    }[];
+    product_images: IProductImage[];
     user: {
         avatar: string
         name: string

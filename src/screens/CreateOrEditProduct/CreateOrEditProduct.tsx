@@ -1,4 +1,5 @@
 import {
+    Image,
     ScrollView,
     StyleSheet,
     Switch,
@@ -10,6 +11,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup';
+import * as ImagePicker from 'expo-image-picker';
+
 
 import { Icon } from "@/src/components/Icon";
 import { theme } from "@/src/theme";
@@ -18,8 +21,11 @@ import { Selection } from "@/src/components/Selection";
 import { Button } from "@/src/components/Button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/src/routes/app.routes";
-import { ProductService } from "@/src/services/ProdutcService";
-import { useEffect } from "react";
+import { IProductImage, ProductService } from "@/src/services/ProdutcService";
+import { useEffect, useState } from "react";
+import Animated, { LinearTransition } from "react-native-reanimated";
+import { ImageUtils } from "@/src/utils/ImageUtils";
+import { ProductImageService } from "@/src/services/ProductImageService";
 
 const schema = yup.object().shape({
     name: yup.string(),
@@ -55,13 +61,25 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
         }
     });
 
+    const [images, setImages] = useState<IProductImage[]>([])
+    const [photoFile, setPhotoFile] = useState([])
 
     async function handleForm(value: any) {
         try {
             if (productId) {
                 await ProductService.update({ ...value, price: Number(value.price) }, productId)
+
+                if (photoFile.length > 0) {
+                    await ProductImageService.add(productId, photoFile)
+                }
             } else {
-                await ProductService.create({ ...value, price: Number(value.price) })
+                const response = await ProductService.create({ ...value, price: Number(value.price) })
+
+                if (photoFile.length > 0) {
+                    await ProductImageService.add(response.id, photoFile)
+
+                }
+
             }
 
             navigation.navigate('homeStack')
@@ -84,11 +102,50 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
             setValue('price', response.price)
             setValue('payment_methods', response.payment_methods.map(item => item.key))
 
+            setImages(response.product_images.map(item => ({ id: item.id, path: ImageUtils.url(item.path) })))
+
         } catch (error) {
             console.log(error)
         } finally {
             // setLoading(false)
         }
+    }
+
+    async function handlePhotoSelect() {
+        try {
+            let photoSelected = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'],
+                allowsEditing: true,
+                aspect: [4, 4],
+                quality: 1,
+
+            })
+
+            if (photoSelected.canceled) return
+            const photo = photoSelected.assets[0]
+
+            if (photo) {
+                const fileExtersion = photo.uri.split('.').pop()
+                const photoFile = {
+                    name: `${photo.fileName}.${fileExtersion}`,
+                    uri: photo.uri,
+                    type: `${photo.type}/${fileExtersion}`
+                }
+                setPhotoFile(state => [...state, photoFile])
+
+
+                setImages(state => [...state, {
+                    id: photoFile.name,
+                    path: photo.uri
+                }])
+            }
+
+        } catch {
+
+        }
+
+
+
     }
 
     useEffect(() => {
@@ -128,13 +185,70 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
                         </Text>
                     </View>
 
-                    <View style={styles.sectionImage}>
-                        <Icon name="plus_regular" color={theme.colors.gray_4} />
-                    </View>
+                    <Animated.View
+                        style={{ flexDirection: 'row', gap: 8 }}
+                        layout={LinearTransition}
+                    >
+                        {images.map(img =>
+                            <View key={img.id}>
+                                <Image
+
+                                    style={{
+                                        width: 100,
+                                        height: 100,
+                                        borderRadius: 6,
+                                    }}
+                                    source={{
+                                        uri: img.path
+                                    }}
+                                />
+
+                                <TouchableOpacity
+                                    style={{
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        padding: 4,
+                                        position: "absolute", right: 4, top: 4,
+                                        backgroundColor: theme.colors.gray_2,
+                                        borderRadius: 999
+                                    }}
+
+                                    onPress={() => {
+                                        ProductImageService.delete(img.id)
+                                        const newArray = images.filter(item => item.id != img.id)
+                                        setImages(newArray)
+                                    }}
+                                >
+
+                                    <Icon
+                                        name="x_regular"
+                                        size={12}
+                                        color={theme.colors.gray_7}
+
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        )}
+
+                        {images.length < 3 &&
+
+                            <TouchableOpacity
+                                style={styles.sectionImage}
+                                onPress={handlePhotoSelect}
+                            >
+                                <Icon name="plus_regular" color={theme.colors.gray_4} />
+                            </TouchableOpacity>
+                        }
+
+
+
+                    </Animated.View>
+
+
                 </View>
 
                 {/* Sobre o Produto */}
-                <View style={styles.section}>
+                < View style={styles.section} >
 
                     <Text style={styles.sectionTitle} >
                         Sobre o produto
