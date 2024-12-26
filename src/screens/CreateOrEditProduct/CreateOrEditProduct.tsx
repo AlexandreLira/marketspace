@@ -18,45 +18,84 @@ import { Selection } from "@/src/components/Selection";
 import { Button } from "@/src/components/Button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/src/routes/app.routes";
+import { ProductService } from "@/src/services/ProdutcService";
+import { useEffect } from "react";
 
 const schema = yup.object().shape({
     name: yup.string(),
     description: yup.string(),
     is_new: yup.boolean(),
-    price: yup.string(),
+    price: yup.number(),
     accept_trade: yup.boolean(),
     payment_methods: yup.array().of(yup.string()).required()
 })
 
 
 const payment_methods = [
-    { key: 'pix', label: 'Pix' },
-    { key: 'card', label: 'Cartão de Crédito' },
-    { key: 'boleto', label: 'Boleto' },
-    { key: 'cash', label: 'Dinheiro' },
-    { key: 'deposit', label: 'Depósito Bancário' },
+    { key: 'pix', name: 'Pix' },
+    { key: 'card', name: 'Cartão de Crédito' },
+    { key: 'boleto', name: 'Boleto' },
+    { key: 'cash', name: 'Dinheiro' },
+    { key: 'deposit', name: 'Depósito Bancário' },
 ]
 
 interface CreateOrEditProductProps extends NativeStackScreenProps<RootStackParamList, 'create_or_edit_product'> { }
 
 
-export function CreateOrEditProduct({ navigation }: CreateOrEditProductProps) {
-    const { register, getValues, handleSubmit, control } = useForm({
+export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductProps) {
+    const productId = route.params?.productId
+    const { handleSubmit, control, setValue } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             name: '',
             description: '',
             payment_methods: [],
             accept_trade: false,
-            price: '0',
             is_new: true,
         }
     });
 
 
-    function handleForm(value: any) {
-        console.log(value)
+    async function handleForm(value: any) {
+        try {
+            if (productId) {
+                await ProductService.update({ ...value, price: Number(value.price) }, productId)
+            } else {
+                await ProductService.create({ ...value, price: Number(value.price) })
+            }
+
+            navigation.navigate('homeStack')
+        } catch (error) {
+
+            console.log(error)
+        }
     }
+
+    async function loadProduct() {
+        try {
+            // setLoading(true)
+            if (!productId) return
+            const response = await ProductService.get(productId)
+
+            setValue('name', response.name)
+            setValue('description', response.description)
+            setValue('is_new', response.is_new)
+            setValue('accept_trade', response.accept_trade)
+            setValue('price', response.price)
+            setValue('payment_methods', response.payment_methods.map(item => item.key))
+
+        } catch (error) {
+            console.log(error)
+        } finally {
+            // setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+
+        loadProduct()
+
+    }, [productId])
 
     return (
         <SafeAreaView
@@ -73,7 +112,7 @@ export function CreateOrEditProduct({ navigation }: CreateOrEditProductProps) {
                     />
                 </TouchableOpacity>
 
-                <Text style={styles.headerTitle}>Criar anúncio</Text>
+                <Text style={styles.headerTitle}>{productId ? 'Editar' : 'Criar'} anúncio</Text>
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollView}>
@@ -210,7 +249,7 @@ export function CreateOrEditProduct({ navigation }: CreateOrEditProductProps) {
                                 <View style={{ gap: 8 }}>
                                     {payment_methods.map(item =>
                                         <Selection
-                                            text={item.label}
+                                            text={item.name}
                                             checked={value?.includes(item.key)}
                                             type="checkbox" key={item.key}
                                             onPress={() => {

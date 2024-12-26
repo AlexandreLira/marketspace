@@ -1,7 +1,8 @@
 import { theme } from "@/src/theme";
 import { useState } from "react";
-import { Image, StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { Icon } from "../Icon";
 
 interface InputProps extends TextInputProps {
     title: string;
@@ -69,20 +70,21 @@ export function Input(props: InputProps) {
                         <TouchableOpacity
                             onPress={() => setHidePassword(state => !state)}
                         >
-                            <Image
-                                source={hidePassword ?
-                                    theme.images.eye_regular :
-                                    theme.images.eye_slash
-                                }
+
+                            <Icon
+                                name={hidePassword ? 'eye_regular' : 'eye_slash'}
                                 style={styles.icon}
+                                size={20}
+                                color={theme.colors.gray_3}
                             />
+
                         </TouchableOpacity>
                     }
                 </View>
 
             </Animated.View>
             {error &&
-                <Text style={{padding: 4}}>{error}</Text>
+                <Text style={{ padding: 4 }}>{error}</Text>
             }
         </View>
     )
@@ -114,11 +116,7 @@ export const styles = StyleSheet.create({
 
     },
     icon: {
-        resizeMode: 'contain',
-        width: 20,
-        height: 20,
         marginRight: 16,
-        tintColor: theme.colors.gray_3
     }
 
 })

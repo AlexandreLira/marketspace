@@ -66,6 +66,7 @@ export function Home({ navigation }) {
                         title="Criar anuncio"
                         icon="plus_regular"
                         style={{ flexGrow: 1 }}
+                        onPress={() => navigation.navigate('create_or_edit_product')}
                     />
                 </View>
 

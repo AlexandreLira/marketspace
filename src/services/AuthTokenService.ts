@@ -14,7 +14,7 @@ export class AuthTokenService {
 
         const storage = JSON.stringify(data)
         await AsyncStorage.setItem(AUTH_TOKEN_STORAGE, storage)
-        AuthTokenService.update(data.token)
+        this.update(data.token)
     }
 
     static async get(): Promise<ISaveProps | any> {

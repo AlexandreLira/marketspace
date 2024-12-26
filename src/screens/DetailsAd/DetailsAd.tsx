@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
     Dimensions,
@@ -16,8 +17,7 @@ import { Icon } from "@/src/components/Icon";
 import { ProfileImage } from "@/src/components/ProfileImage";
 import { RootStackParamList } from "@/src/routes/app.routes";
 import { theme } from "@/src/theme";
-
-const PROFILE_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvJaoIeJQU_V9rL_ZII61whWyqSFbmMgTgwQ&s'
+import { IProductDetails, ProductService } from "@/src/services/ProdutcService";
 
 const item = {
     price: 900.90,
@@ -27,24 +27,46 @@ const item = {
     isNew: false
 }
 
-const payment = [
-    {
-        title: 'Boleto',
-        icon: 'barcode_regular'
-    },
-    {
-        title: 'Pix',
-        icon: 'qr_code_regular'
-    },
-    {
-        title: 'Depósito Bancário',
-        icon: 'bank_regular'
-    },
-]
+const payment_icon = {
+    pix: 'qr_code_regular',
+    card: 'credit_card_regular',
+    boleto: 'bank_regular',
+    cash: 'money_regular',
+    deposit: 'barcode_regular',
+}
 
 interface DetailsAdProps extends NativeStackScreenProps<RootStackParamList, 'details_ad'> { }
 
-export function DetailsAd({ navigation }: DetailsAdProps) {
+export function DetailsAd({ navigation, route }: DetailsAdProps) {
+    const productId = route.params?.productId
+    const [product, setProduct] = useState<IProductDetails>({} as IProductDetails)
+    const [isLoading, setLoading] = useState(true)
+
+    const styles = styling(product)
+
+
+    async function loadProduct() {
+        try {
+            setLoading(true)
+            const response = await ProductService.get(productId)
+            console.log(response)
+            setProduct(response)
+        } catch (error) {
+            navigation.goBack()
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        loadProduct()
+    }, [productId])
+
+    if (isLoading) {
+        return <></>
+    }
+
 
     return (
         <SafeAreaView>
@@ -58,7 +80,7 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                         />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('create_or_edit_product')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('create_or_edit_product', { productId: product.id })}>
                         <Icon
                             name="pencil_simple_line_regular"
                             color={theme.colors.gray_1}
@@ -69,7 +91,7 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                 <View>
 
                     {
-                        true &&
+                        !product?.is_active &&
                         <>
 
                             <View style={{
@@ -96,13 +118,11 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                     }
 
                     <FlatList
-                        data={[item, item, item]}
+                        data={product.product_images}
                         horizontal
-                        // style={{flex: 1}}
-                        // style={{flex}}
                         renderItem={({ item }) =>
                             <Image
-                                source={{ uri: item.product_image }}
+                                source={{ uri: 'http://192.168.0.7:3333/images/' + item.path }}
                                 style={styles.image}
                             />
                         }
@@ -114,27 +134,27 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                     <View style={styles.profile}>
                         <ProfileImage
                             size={24}
-                            source={{ uri: PROFILE_URL }}
+                            source={{ uri: 'http://192.168.0.7:3333/images/' + product.user.avatar }}
                         />
-                        <Text style={styles.label}>Maria Gomes</Text>
+                        <Text style={styles.label}>{product.user.name}</Text>
                     </View>
 
                     <View style={{ gap: 8 }}>
 
                         <View style={styles.tag}>
-                            <Text style={styles.tagTitle}>USADO</Text>
+                            <Text style={styles.tagTitle}>{product.is_new ? 'NOVO' : 'USADO'}</Text>
                         </View>
 
                         <View style={styles.titleWrapper}>
-                            <Text style={styles.title}>{item.title}</Text>
+                            <Text style={styles.title}>{product.name}</Text>
                             <View style={styles.priceWrapper}>
                                 <Text style={styles.dollarSign}>R$</Text>
-                                <Text style={styles.price}>{item.price}</Text>
+                                <Text style={styles.price}>{product.price}</Text>
                             </View>
                         </View>
 
                         <Text style={styles.label}>
-                            Cras congue cursus in tortor sagittis placerat nunc, tellus arcu. Vitae ante leo eget maecenas urna mattis cursus.
+                            {product.description}
                         </Text>
                     </View>
 
@@ -144,7 +164,7 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                                 Aceita troca?
                             </Text>
                             <Text style={styles.label}>
-                                Não
+                                {product.accept_trade ? 'Sim' : 'Não'}
                             </Text>
 
                         </View>
@@ -154,18 +174,18 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
                                 Meios de pagamento:
                             </Text>
 
-                            {payment.map(item =>
+                            {product.payment_methods.map(item =>
                                 <View
                                     style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}
-                                    key={item.title}
+                                    key={item.key}
                                 >
                                     <Icon
-                                        name={item.icon}
+                                        name={payment_icon[item.key]}
                                         size={18}
                                         color={theme.colors.gray_1}
                                     />
                                     <Text style={styles.label}>
-                                        {item.title}
+                                        {item.name}
                                     </Text>
 
                                 </View>
@@ -195,7 +215,7 @@ export function DetailsAd({ navigation }: DetailsAdProps) {
 }
 
 
-const styles = StyleSheet.create({
+const styling = (data: IProductDetails) => StyleSheet.create({
     content: {
         paddingHorizontal: 24,
         marginTop: 24,
@@ -236,14 +256,16 @@ const styles = StyleSheet.create({
         color: theme.colors.gray_2
     },
     tag: {
-        backgroundColor: theme.colors.gray_5,
+        backgroundColor: data.is_new ? theme.colors.blue_light : theme.colors.gray_5,
         paddingHorizontal: 8,
         paddingVertical: 2,
         borderRadius: 999,
         alignSelf: 'baseline'
     },
     tagTitle: {
-        fontFamily: theme.fonts.bold, fontSize: 10, color: theme.colors.gray_2
+        fontFamily: theme.fonts.bold,
+        fontSize: 10,
+        color: data.is_new ? theme.colors.gray_7 : theme.colors.gray_2
     },
 
     priceWrapper: {

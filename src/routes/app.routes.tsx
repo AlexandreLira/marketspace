@@ -9,9 +9,9 @@ import { CreateOrEditProduct } from "../screens/CreateOrEditProduct";
 import { useAuth } from "../hooks/useAuth";
 
 export type RootStackParamList = {
-    home: undefined;
-    details_ad: undefined;
-    create_or_edit_product: undefined;
+    homeStack: undefined;
+    details_ad: { productId: string };
+    create_or_edit_product: { productId: string } | undefined;
 };
 
 const TabBottom = createBottomTabNavigator();
@@ -73,7 +73,7 @@ export function TabBottomRoutes() {
 export function AppRoutes() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="home" component={TabBottomRoutes} />
+            <Stack.Screen name="homeStack" component={TabBottomRoutes} />
             <Stack.Screen name="details_ad" component={DetailsAd} />
             <Stack.Screen name="create_or_edit_product" component={CreateOrEditProduct} />
         </Stack.Navigator>
