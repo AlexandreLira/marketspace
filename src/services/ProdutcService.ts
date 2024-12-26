@@ -74,4 +74,12 @@ export class ProductService {
             throw error
         }
     }
+
+    static async active(id: string, active: boolean) {
+        try {
+            await api.patch(`/products/${id}`, { is_active: active })
+        } catch (error) {
+            throw error
+        }
+    }
 }

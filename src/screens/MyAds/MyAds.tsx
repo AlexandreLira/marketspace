@@ -1,15 +1,24 @@
-import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useState } from "react";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useFocusEffect } from "@react-navigation/native";
+import {
+    FlatList,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
+
 import { Container } from "@/src/components/Container";
 import { Icon } from "@/src/components/Icon";
 import { ProductCard } from "@/src/components/ProductCard";
-import { theme } from "@/src/theme";
-import { useEffect, useState } from "react";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import { RootStackParamList } from "@/src/routes/app.routes";
 import { IProductDetails } from "@/src/services/ProdutcService";
 import { api } from "@/src/services/api";
 
-
+import { theme } from "@/src/theme";
 
 interface MyAdsProps extends NativeStackScreenProps<RootStackParamList, 'home'> { }
 
@@ -29,9 +38,9 @@ export function MyAds({ navigation }: MyAdsProps) {
         }
     }
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         loadProducts()
-    }, [])
+    }, []))
 
     return (
         <Container>

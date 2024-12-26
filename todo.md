@@ -6,5 +6,8 @@
 [x] - Criar tela para criar anuncio 
 [x] - Adicionar React Hook Form na tela de criar anúncio
 [x] - Criar conta
+[x] - Ativar e desativar produto
+[] - Excluir produto
+[] - Mostrar todos os produtos
 [] - Adicionar um dropdown menu na tela de anuncios
 [] - Tipar as navegações

@@ -53,6 +53,15 @@ export function DetailsAd({ navigation, route }: DetailsAdProps) {
         }
     }
 
+    async function handleActiveProduct() {
+        try {
+            setProduct(state => ({...state, is_active: !state.is_active}))
+            await ProductService.active(product.id, !product.is_active)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         loadProduct()
     }, [productId])
@@ -190,8 +199,10 @@ export function DetailsAd({ navigation, route }: DetailsAdProps) {
                     <View style={{ gap: 8 }}>
 
                         <Button
-                            title="Desativar anúncio"
+                            title={`${product.is_active ? 'Desativar' : 'Reativar'} anúncio`}
                             icon="power_regular"
+                            bg={product.is_active ? theme.colors.gray_1 : theme.colors.blue_light}
+                            onPress={handleActiveProduct}
                         />
                         <Button
                             title="Excluir anúncio"
