@@ -1,9 +1,5 @@
-import { Button } from "@/src/components/Button";
-import { Icon } from "@/src/components/Icon";
-import { ProductCard } from "@/src/components/ProductCard";
-import { ProfileImage } from "@/src/components/ProfileImage";
-import { useAuth } from "@/src/hooks/useAuth";
-import { theme } from "@/src/theme";
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
     FlatList,
     SafeAreaView,
@@ -14,47 +10,44 @@ import {
     View
 } from "react-native";
 
-const list = [
-    {
-        price: 59.90,
-        profile_image: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg',
-        title: 'Tênis vermelho',
-        product_image: 'https://acdn.mitiendanube.com/stores/001/155/809/products/redley_vermelho_5_1_11-da229778b3ee4ace1316763987640324-1024-1024.jpg',
-        isNew: false
-    },
-    {
-        price: 120.00,
-        profile_image: 'https://media.istockphoto.com/id/1437816897/pt/foto/business-woman-manager-or-human-resources-portrait-for-career-success-company-we-are-hiring-or.jpg?s=612x612&w=0&k=20&c=OsiL-G3rU8NzppNGl3Yh9exwYzoSfCrRb9gxawy1VR4=',
-        title: 'Bicicleta',
-        product_image: 'https://lasmagrelas.com.br/wp-content/uploads/2023/05/Frame-36main.png',
-        isNew: true
-    },
-    {
-        price: 473.90,
-        profile_image: 'https://plus.unsplash.com/premium_photo-1689977968861-9c91dbb16049?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D',
-        title: 'Sofá 1,80m',
-        product_image: 'https://imgs.casasbahia.com.br/55062675/1g.jpg',
-        isNew: true
-    },
-    {
-        price: 900.90,
-        profile_image: 'https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/50dab922-5d48-4c6b-8725-7fd0755d9334/3a3f2d35-8167-4708-9ef0-bdaa980989f9.png',
-        title: 'Iphone 16',
-        product_image: 'https://jasondeegan.com/wp-content/uploads/2024/09/iPhone-16-Review-Discover-How-Its-Changing-the-Game.jpg',
-        isNew: false
-    },
-]
+import { Button } from "@/src/components/Button";
+import { Icon } from "@/src/components/Icon";
+import { ProductCard } from "@/src/components/ProductCard";
+import { ProfileImage } from "@/src/components/ProfileImage";
+
+import { useAuth } from "@/src/hooks/useAuth";
+import { IProductDetails, ProductService } from "@/src/services/ProdutcService";
+import { theme } from "@/src/theme";
+import { formatPrice } from "@/src/utils/Format";
+import { ImageUtils } from "@/src/utils/ImageUtils";
 
 export function Home({ navigation }) {
 
-    const { user } = useAuth()
+    const { user } = useAuth();
+    const [products, setProducts] = useState<IProductDetails[]>([])
+
+
+    async function loadProducts() {
+        try {
+            const response = await ProductService.getAll()
+
+            setProducts(response)
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useFocusEffect(useCallback(() => {
+        loadProducts()
+    }, []))
 
     return (
         <SafeAreaView style={styles.safearea} >
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.headerProfile}>
-                        <ProfileImage source={{ uri: 'http://192.168.0.7:3333/images/' + user.avatar }} />
+                        <ProfileImage source={{ uri: ImageUtils.url(user.avatar) }} />
 
                         <View style={{ justifyContent: 'space-evenly' }}>
                             <Text style={styles.profileText}>Boas vindas,</Text>
@@ -70,7 +63,7 @@ export function Home({ navigation }) {
                     />
                 </View>
 
-
+                {/* Meus anúncios */}
                 <View style={styles.sellContent}>
                     <Text style={styles.text}>
                         Seus produtos anunciados para venda
@@ -127,6 +120,7 @@ export function Home({ navigation }) {
                     </TouchableOpacity>
                 </View>
 
+                {/*  Busca */}
                 <View style={styles.searchContent}>
                     <Text style={styles.text}>
                         Compre produtos variados
@@ -172,16 +166,23 @@ export function Home({ navigation }) {
                 <View style={{ flex: 1 }}>
 
                     <FlatList
-                        keyExtractor={(item) => item.product_image}
-
+                        keyExtractor={(item) => item.id}
                         columnWrapperStyle={{ gap: 20 }}
                         contentContainerStyle={{ gap: 20, }}
                         numColumns={2}
-                        data={list}
+                        data={products}
                         renderItem={({ item }) =>
                             <ProductCard
-                                data={item}
-                                onPress={() => navigation.navigate('details_ad')}
+                                data={{
+                                    isNew: item.is_new,
+                                    price: formatPrice(item.price),
+                                    product_image: item.product_images[0] ? ImageUtils.url(item.product_images[0].path) : 'https://acdn.mitiendanube.com/stores/001/155/809/products/redley_vermelho_5_1_11-da229778b3ee4ace1316763987640324-1024-1024.jpg',
+                                    profile_image: ImageUtils.url(item?.user?.avatar),
+                                    title: item.name,
+                                    disabled: item.is_active
+                                }}
+
+                                onPress={() => navigation.navigate('details_ad', { productId: item.id })}
                             />
                         }
                     />

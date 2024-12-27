@@ -33,8 +33,8 @@ export function MyAds({ navigation }: MyAdsProps) {
 
             setProducts(response.data)
 
-        } catch {
-
+        } catch (error) {
+            console.log(error)
         }
     }
 

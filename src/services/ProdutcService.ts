@@ -49,9 +49,9 @@ export class ProductService {
             throw error
         }
     }
-    static async getAll(): Promise<IProduct[]> {
+    static async getAll(): Promise<IProductDetails[]> {
         try {
-            const response = await api.post('/products')
+            const response = await api.get('/products')
             return response.data
         } catch (error) {
             throw error

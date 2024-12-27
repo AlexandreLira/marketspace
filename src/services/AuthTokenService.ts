@@ -21,6 +21,7 @@ export class AuthTokenService {
         const response = await AsyncStorage.getItem(AUTH_TOKEN_STORAGE)
         if (response) {
             const data = JSON.parse(response)
+            this.update(data.token)
             return data
         }
         return {}
