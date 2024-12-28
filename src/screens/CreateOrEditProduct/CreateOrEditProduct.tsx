@@ -28,6 +28,7 @@ import Animated, { LinearTransition } from "react-native-reanimated";
 import { ImageUtils } from "@/src/utils/ImageUtils";
 import { ProductImageService } from "@/src/services/ProductImageService";
 import { UserService } from "@/src/services/UserService";
+import { formatPrice } from "@/src/utils/Format";
 
 const schema = yup.object().shape({
     name: yup.string().required(),
@@ -155,6 +156,7 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
             const user = await UserService.get()
 
             const product: IProductDetails = {
+                id: productId,
                 name: form.name,
                 product_images: images,
                 payment_methods: form.payment_methods.map(item => ({
@@ -354,7 +356,7 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
                                 title="Preço"
                                 keyboardType="decimal-pad"
                                 prefix
-                                value={value}
+                                value={String(value || '')}
                                 onChangeText={onChange}
                             />
 

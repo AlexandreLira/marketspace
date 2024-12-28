@@ -33,7 +33,7 @@ export interface IProductDetails extends IProduct {
     }
 }
 
-interface IProductCreate {
+export interface IProductCreate {
     name: string,
     description: string,
     is_new: boolean,
