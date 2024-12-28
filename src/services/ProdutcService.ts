@@ -18,9 +18,11 @@ export interface IProduct {
     updated_at: string
 }
 
+type PaymentKeys = 'pix' | 'card' | 'boleto' | 'cash' | 'deposit'
+
 export interface IProductDetails extends IProduct {
     payment_methods: {
-        key: string,
+        key: PaymentKeys,
         name: string
     }[];
     product_images: IProductImage[];

@@ -1,6 +1,7 @@
 import { theme } from "@/src/theme";
 import { Image, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 import { ProfileImage } from "../ProfileImage";
+import { formatPrice } from "@/src/utils/Format";
 
 
 type CardProps = {
@@ -59,7 +60,7 @@ export function ProductCard(props: ProductCardProps) {
 
             <View style={styles.priceContent}>
                 <Text style={styles.dollarSign}>R$</Text>
-                <Text style={styles.price}>{data.price}</Text>
+                <Text style={styles.price}>{formatPrice(data.price)}</Text>
             </View>
 
         </TouchableOpacity>

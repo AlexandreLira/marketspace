@@ -1,5 +1,6 @@
 import {
     Image,
+    InteractionManager,
     ScrollView,
     StyleSheet,
     Switch,
@@ -21,14 +22,15 @@ import { Selection } from "@/src/components/Selection";
 import { Button } from "@/src/components/Button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/src/routes/app.routes";
-import { IProductImage, ProductService } from "@/src/services/ProdutcService";
+import { IProductDetails, IProductImage, ProductService } from "@/src/services/ProdutcService";
 import { useEffect, useState } from "react";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { ImageUtils } from "@/src/utils/ImageUtils";
 import { ProductImageService } from "@/src/services/ProductImageService";
+import { UserService } from "@/src/services/UserService";
 
 const schema = yup.object().shape({
-    name: yup.string(),
+    name: yup.string().required(),
     description: yup.string(),
     is_new: yup.boolean(),
     price: yup.number(),
@@ -37,7 +39,7 @@ const schema = yup.object().shape({
 })
 
 
-const payment_methods = [
+const PAYMENT_METHODS = [
     { key: 'pix', name: 'Pix' },
     { key: 'card', name: 'Cartão de Crédito' },
     { key: 'boleto', name: 'Boleto' },
@@ -50,7 +52,7 @@ interface CreateOrEditProductProps extends NativeStackScreenProps<RootStackParam
 
 export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductProps) {
     const productId = route.params?.productId
-    const { handleSubmit, control, setValue } = useForm({
+    const { handleSubmit, control, setValue, getValues } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             name: '',
@@ -102,7 +104,7 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
             setValue('price', response.price)
             setValue('payment_methods', response.payment_methods.map(item => item.key))
 
-            setImages(response.product_images.map(item => ({ id: item.id, path: ImageUtils.url(item.path) })))
+            setImages(response.product_images.map(item => ({ id: item.id, path: item.path })))
 
         } catch (error) {
             console.log(error)
@@ -144,6 +146,35 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
 
         }
 
+
+
+    }
+
+    async function handleConfirm(form: typeof schema.__outputType) {
+        try {
+            const user = await UserService.get()
+
+            const product: IProductDetails = {
+                name: form.name,
+                product_images: images,
+                payment_methods: form.payment_methods.map(item => ({
+                    key: item,
+                    name: PAYMENT_METHODS.find(pay => pay.key == item)?.name
+                })),
+                accept_trade: form.accept_trade || false,
+                is_active: true,
+                description: form.description || '',
+                is_new: form.is_new || true,
+                price: form.price || 0,
+                user: user
+
+
+            }
+
+            navigation.navigate('preview_product', { product })
+        } catch (error) {
+            console.log(error)
+        }
 
 
     }
@@ -199,7 +230,7 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
                                         borderRadius: 6,
                                     }}
                                     source={{
-                                        uri: img.path
+                                        uri: ImageUtils.url(img.path)
                                     }}
                                 />
 
@@ -320,7 +351,7 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
                         render={({ field: { onChange, value } }) =>
 
                             <Input
-                                title="45.00"
+                                title="Preço"
                                 keyboardType="decimal-pad"
                                 prefix
                                 value={value}
@@ -361,7 +392,7 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
                             name="payment_methods"
                             render={({ field: { onChange, value } }) =>
                                 <View style={{ gap: 8 }}>
-                                    {payment_methods.map(item =>
+                                    {PAYMENT_METHODS.map(item =>
                                         <Selection
                                             text={item.name}
                                             checked={value?.includes(item.key)}
@@ -393,9 +424,11 @@ export function CreateOrEditProduct({ navigation, route }: CreateOrEditProductPr
                     style={{ flex: 1 }}
                     bg={theme.colors.gray_5}
                     color={theme.colors.gray_2}
+                    onPress={() => navigation.goBack()}
                 />
                 <Button
-                    onPress={handleSubmit(handleForm)}
+                    onPress={handleSubmit(handleConfirm)}
+
                     title="Avançar"
                     style={{ flex: 1 }}
                 />

@@ -7,11 +7,14 @@ import { theme } from "../theme";
 import { DetailsAd } from "../screens/DetailsAd";
 import { CreateOrEditProduct } from "../screens/CreateOrEditProduct";
 import { useAuth } from "../hooks/useAuth";
+import { PreviewProductScreen } from "../screens/PreviewProduct/PreviewProduct";
+import { IProductDetails } from "../services/ProdutcService";
 
 export type RootStackParamList = {
     homeStack: undefined;
     details_ad: { productId: string };
     create_or_edit_product: { productId: string } | undefined;
+    preview_product: { product: IProductDetails }
 };
 
 const TabBottom = createBottomTabNavigator();
@@ -76,6 +79,7 @@ export function AppRoutes() {
             <Stack.Screen name="homeStack" component={TabBottomRoutes} />
             <Stack.Screen name="details_ad" component={DetailsAd} />
             <Stack.Screen name="create_or_edit_product" component={CreateOrEditProduct} />
+            <Stack.Screen name="preview_product" component={PreviewProductScreen} />
         </Stack.Navigator>
     )
 }

@@ -17,8 +17,26 @@ interface ILoginReturn {
     refresh_token: string;
 }
 
+type IUser = {
+
+    id: string,
+    avatar: string,
+    name: string,
+    email: string,
+    tel: string
+
+}
+
 export class UserService {
 
+    static async get() {
+        try {
+            const response = await api.get<IUser>('users/me')
+            return response.data
+        } catch (error) {
+            throw error
+        }
+    }
     static async login(email: string, password: string): Promise<ILoginReturn> {
         try {
             const payload = { email, password }

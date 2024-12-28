@@ -8,6 +8,10 @@
 [x] - Criar conta
 [x] - Ativar e desativar produto
 [x] - Excluir produto
-[] - Mostrar todos os produtos
+[x] - Mostrar todos os produtos
+[x] - Pegar informações do usuario logado
+[x] - Pre visualizar anuncio
+[\] - Salvar anuncios apartir da pre visualição
+
 [] - Adicionar um dropdown menu na tela de anuncios
 [] - Tipar as navegações
