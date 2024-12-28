@@ -18,9 +18,9 @@ import { IProductDetails, ProductService } from "@/src/services/ProdutcService";
 import { PreviewProduct } from "@/src/components/PreviewProduct/PreviewProduct";
 
 
-interface DetailsAdProps extends NativeStackScreenProps<RootStackParamList, 'details_ad'> { }
+interface DetailsMyProductProps extends NativeStackScreenProps<RootStackParamList, 'details_my_product'> { }
 
-export function DetailsAd({ navigation, route }: DetailsAdProps) {
+export function DetailsMyProduct({ navigation, route }: DetailsMyProductProps) {
     const productId = route.params?.productId
     const [product, setProduct] = useState<IProductDetails>({} as IProductDetails)
     const [isLoading, setLoading] = useState(true)

@@ -1,1 +1,0 @@
-export { DetailsAd } from './DetailsAd'

@@ -176,13 +176,13 @@ export function Home({ navigation }) {
                                 data={{
                                     isNew: item.is_new,
                                     price: formatPrice(item.price),
-                                    product_image: item.product_images[0] ? ImageUtils.url(item.product_images[0].path) : 'https://acdn.mitiendanube.com/stores/001/155/809/products/redley_vermelho_5_1_11-da229778b3ee4ace1316763987640324-1024-1024.jpg',
-                                    profile_image: ImageUtils.url(item?.user?.avatar),
+                                    product_image: ImageUtils.url(item.product_images[0]?.path)!,
+                                    profile_image: ImageUtils.url(item?.user?.avatar)!,
                                     title: item.name,
                                     disabled: item.is_active
                                 }}
 
-                                onPress={() => navigation.navigate('details_ad', { productId: item.id })}
+                                onPress={() => navigation.navigate('details_product', { productId: item.id })}
                             />
                         }
                     />

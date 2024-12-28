@@ -4,15 +4,17 @@ import { Home } from "../screens/Home";
 import { MyAds } from "../screens/MyAds";
 import { Icon } from "../components/Icon";
 import { theme } from "../theme";
-import { DetailsAd } from "../screens/DetailsAd";
+import { DetailsMyProduct } from "../screens/DetailsMyProduct";
 import { CreateOrEditProduct } from "../screens/CreateOrEditProduct";
 import { useAuth } from "../hooks/useAuth";
 import { PreviewProductScreen } from "../screens/PreviewProduct/PreviewProduct";
 import { IProductDetails } from "../services/ProdutcService";
+import { DetailsProduct } from "../screens/DetailsProduct";
 
 export type RootStackParamList = {
     homeStack: undefined;
-    details_ad: { productId: string };
+    details_my_product: { productId: string };
+    details_product: { productId: string };
     create_or_edit_product: { productId: string } | undefined;
     preview_product: { product: IProductDetails }
 };
@@ -77,7 +79,8 @@ export function AppRoutes() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="homeStack" component={TabBottomRoutes} />
-            <Stack.Screen name="details_ad" component={DetailsAd} />
+            <Stack.Screen name="details_product" component={DetailsProduct} />
+            <Stack.Screen name="details_my_product" component={DetailsMyProduct} />
             <Stack.Screen name="create_or_edit_product" component={CreateOrEditProduct} />
             <Stack.Screen name="preview_product" component={PreviewProductScreen} />
         </Stack.Navigator>

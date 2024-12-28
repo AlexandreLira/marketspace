@@ -49,7 +49,7 @@ export function ProductCard(props: ProductCardProps) {
                     <Text style={styles.tagText}>{data.isNew ? 'Novo' : 'Usado'}</Text>
                 </View>
                 <Image
-                    source={{ uri: data.product_image }}
+                    source={{ uri: data.product_image ||  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOI4tLtJsjQTS48fp3C-mHxG0861s17f6A5EvUwubXLASUusXFcbE5FCveSh2-aAjV5yo&usqp=CAU' }}
                     style={styles.image}
                 />
             </View>

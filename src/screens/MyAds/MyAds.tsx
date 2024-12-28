@@ -19,8 +19,9 @@ import { IProductDetails } from "@/src/services/ProdutcService";
 import { api } from "@/src/services/api";
 
 import { theme } from "@/src/theme";
+import { ImageUtils } from "@/src/utils/ImageUtils";
 
-interface MyAdsProps extends NativeStackScreenProps<RootStackParamList, 'home'> { }
+interface MyAdsProps extends NativeStackScreenProps<RootStackParamList, 'homeStack'> { }
 
 
 export function MyAds({ navigation }: MyAdsProps) {
@@ -83,12 +84,12 @@ export function MyAds({ navigation }: MyAdsProps) {
                             data={{
                                 isNew: item.is_new,
                                 price: item.price,
-                                product_image: item.product_images[0] ? `http://192.168.0.7:3333/images/${item.product_images[0].path}` : 'https://acdn.mitiendanube.com/stores/001/155/809/products/redley_vermelho_5_1_11-da229778b3ee4ace1316763987640324-1024-1024.jpg',
+                                product_image: ImageUtils.url(item.product_images[0]?.path) || 'https://acdn.mitiendanube.com/stores/001/155/809/products/redley_vermelho_5_1_11-da229778b3ee4ace1316763987640324-1024-1024.jpg',
                                 profile_image: 'https://acdn.mitiendanube.com/stores/001/155/809/products/redley_vermelho_5_1_11-da229778b3ee4ace1316763987640324-1024-1024.jpg',
                                 title: item.name,
                                 disabled: !item.is_active
                             }}
-                            onPress={() => navigation.navigate('details_ad', { productId: item.id })}
+                            onPress={() => navigation.navigate('details_my_product', { productId: item.id })}
                             profileShown={false}
                         />
                     }
