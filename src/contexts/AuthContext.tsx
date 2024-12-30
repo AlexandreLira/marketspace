@@ -3,6 +3,7 @@ import { UserDTO } from '../dtos/UserDTO';
 import { UserService } from '../services/UserService';
 import { UserStorageService } from '../services/UserStorageService';
 import { AuthTokenService } from '../services/AuthTokenService';
+import { api } from '../services/api';
 
 export type AuthCOntextDataProps = {
     user: UserDTO;
@@ -78,6 +79,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
     useEffect(() => {
         loadUser()
+    }, [])
+
+
+    useEffect(() => {
+        const subscribe = api.registerInterceptTokenManager(logout);
+
+        return () => {
+            subscribe()
+        }
     }, [])
 
     return (

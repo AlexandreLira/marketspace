@@ -32,7 +32,6 @@ export function DetailsMyProduct({ navigation, route }: DetailsMyProductProps) {
         try {
             setLoading(true)
             const response = await ProductService.get(productId)
-            console.log(response)
             setProduct(response)
         } catch (error) {
             navigation.goBack()

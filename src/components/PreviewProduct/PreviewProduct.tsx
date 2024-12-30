@@ -23,7 +23,6 @@ export enum TPyamentIcons {
 export function PreviewProduct(props: PreviewProductProps) {
     const { product } = props;
     const styles = styling(product)
-    console.log(product)
 
     return (
         < >
